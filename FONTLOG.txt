@@ -1,0 +1,58 @@
+FONTLOG for McKitrick
+=====================
+
+This file provides detailed information on the McKitrick font software. It is
+distributed with the fonts under the SIL Open Font License, Version 1.1.
+
+
+Basic Font Information
+----------------------
+
+McKitrick is a condensed display typeface drawn from a sheet of hand-cut
+marker sketches. Each letter is built from separate flat-ended strokes; the
+dots on i and j taper, wider at the top. One weight (Regular), 220 glyphs,
+covering ASCII, Latin-1 and Windows-1252. OpenType features: kern, and
+ss01/salt for an alternative f with a long descender.
+
+The glyphs are defined as centre-line strokes in Python (sources/glyphs.py)
+and expanded to outlines. Sidebearings and kerning are measured from the
+outlines (sources/spacing.py). The build (sources/build.py) writes TTF, OTF,
+WOFF2 and an editable UFO source. The original pencil sketch is included in
+sources/sketch/.
+
+The design and the original sketches are by Ian Lawton. The build tooling,
+the extrapolated glyphs and the spacing were developed with the help of
+Claude (Anthropic), an AI assistant, working from those sketches under Ian
+Lawton's direction and review.
+
+
+ChangeLog
+---------
+
+9 October 2026 (Ian Lawton) McKitrick v1.500
+- Released under the SIL Open Font License 1.1
+- Completed ASCII, Latin-1 and Windows-1252: 83 new glyphs, including
+  tilde, ring and caron accents, Æ, Ø, ß, Ð, Þ, currency and other symbols,
+  superiors and fractions
+- Vertical metrics, gasp and other font tables set to current
+  recommendations
+- Added the editable UFO source
+
+8 October 2026 (Ian Lawton) McKitrick v1.400
+- Added the middle dot (·)
+- Overshoot for round letters (o, e, O, 0, 8)
+- Reworked &, S, s and £
+
+7 October 2026 (Ian Lawton) McKitrick v1.100
+- Optical spacing and generated kerning
+
+7 October 2026 (Ian Lawton) McKitrick v1.000
+- First version, drawn from the original sketch of i t r i j c k l g m f
+
+
+Acknowledgements
+----------------
+
+N: Ian Lawton
+W: https://github.com/ianlawton
+D: Designer

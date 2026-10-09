@@ -1,0 +1,3 @@
+fonttools[woff]>=4.50
+shapely>=2.0
+ufoLib2>=0.16
