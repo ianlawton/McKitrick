@@ -6,6 +6,8 @@ McKitrick is a condensed display typeface drawn from a single sheet of hand-cut 
 
 It works best at display sizes: headings, posters, signs, labels and short lines of text.
 
+![McKitrick in use](documentation/sample-in-use.png)
+
 ## Features
 
 - **Regular** weight, 220 glyphs
