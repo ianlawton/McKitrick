@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
-# Rebuild McKitrick from source.
-# Usage:  pip install -r sources/requirements.txt && ./build.sh
+# Rebuild Mckitrick from source.
+#   pip install -r sources/requirements.txt && ./build.sh
+# 1. sources/build.py draws every glyph, fits smooth curves, spaces and kerns
+#    them, and writes the UFO source.
+# 2. gftools builder compiles TTF, OTF and WOFF2 into fonts/.
 set -euo pipefail
 cd "$(dirname "$0")"
-
-MCKITRICK_UFO="sources/McKitrick-Regular.ufo" python3 sources/build.py
-
-cp sources/out/McKitrick-Regular.ttf   fonts/ttf/
-cp sources/out/McKitrick-Regular.otf   fonts/otf/
-cp sources/out/McKitrick-Regular.woff2 fonts/webfonts/
-echo "Fonts written to fonts/ and the UFO source refreshed in sources/."
+python3 sources/build.py
+cd sources && gftools builder config.yaml

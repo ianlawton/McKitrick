@@ -1,0 +1,8 @@
+sources:
+  - Mckitrick-Regular.ufo
+familyName: Mckitrick
+buildVariable: false
+buildStatic: true
+buildOTF: true
+buildWebfont: true
+outputDir: ../fonts

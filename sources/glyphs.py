@@ -336,7 +336,7 @@ def ring_m(cx, y):
 
 
 def caron(cx, y):
-    return stroke([(cx - 85, y + 115), (cx, y), (cx + 85, y + 115)], 66)
+    return stroke([(cx - 85, y + 115), (cx, y + 8), (cx + 85, y + 115)], 66, "bevel")
 
 
 def macron_m(cx, y):
@@ -459,6 +459,171 @@ g("trademark", 0x2122, affinity.translate(affinity.scale(G["T"][1], 0.45, 0.45, 
   affinity.translate(affinity.scale(G["M"][1], 0.45, 0.45, origin=(0, 0)), 170, 420).buffer(14, join_style=2))
 g("circumflex", 0x2C6, circ(110, 640))
 g("tilde", 0x2DC, tilde_m(120, 640))
+
+# ================================================================ v2.0: Google Fonts Latin Core
+def breve(cx, y):
+    return stroke(bz((cx - 82, y + 118), (cx - 72, y + 8), (cx + 72, y + 8), (cx + 82, y + 118)), 62)
+
+
+def dotabove(cx, y):
+    return dot(cx, y, h=100, wb=72, wt=108)
+
+
+def hungarumlaut(cx, y):
+    return unary_union([stroke([(cx - 80, y), (cx - 15, y + 125)], 62),
+                        stroke([(cx + 15, y), (cx + 80, y + 125)], 62)])
+
+
+_comma_small = affinity.scale(unary_union([dot(60, 0), stroke(bz((60, 20), (62, -60), (45, -120), (5, -160)), 70)]),
+                              0.78, 0.78, origin=(60, 110))
+
+
+def commabelow(cx):
+    return affinity.translate(_comma_small, cx - 60, -160)
+
+
+def commaturned(cx, y):
+    return affinity.translate(affinity.rotate(_comma_small, 180, origin=(60, 0)), cx - 60, y + 20)
+
+
+def ogonek(x):
+    return stroke(bz((x, 35), (x - 58, -40), (x - 52, -175), (x + 48, -188)), 62)
+
+
+def apostrophe_caron(x, y):
+    """A tapered wedge: wide at the top like the font's dots, narrowing as it leans left."""
+    return Polygon([(x - 36, y + 165), (x + 44, y + 165), (x + 6, y + 5), (x - 24, y + 5)])
+
+
+MARKS.update({"macron": macron_m, "breve": breve, "dotaccent": dotabove, "hungarumlaut": hungarumlaut})
+ASCENDER_BASES = {"l", "d", "h", "k", "b", "t", "f"}
+
+
+def _cx(name):
+    minx, _, maxx, _ = G[name][1].bounds
+    return (minx + maxx) / 2
+
+
+def _top_y(base):
+    if base in ASCENDER_BASES:
+        return 860
+    return 640 if (base.islower() or base in ("dotlessi", "dotlessj")) else 820
+
+
+g("dotlessj", 0x237, stroke(path((110, XH), bz((110, 60), (110, -70), (80, -140), (0, -180)))))
+
+ABOVE = [  # (base, mark, codepoint)
+    ("A", "macron", 0x100), ("a", "macron", 0x101), ("A", "breve", 0x102), ("a", "breve", 0x103),
+    ("C", "acute", 0x106), ("c", "acute", 0x107), ("C", "dotaccent", 0x10A), ("c", "dotaccent", 0x10B),
+    ("C", "caron", 0x10C), ("c", "caron", 0x10D), ("D", "caron", 0x10E),
+    ("E", "macron", 0x112), ("e", "macron", 0x113), ("E", "dotaccent", 0x116), ("e", "dotaccent", 0x117),
+    ("E", "caron", 0x11A), ("e", "caron", 0x11B), ("G", "breve", 0x11E), ("g", "breve", 0x11F),
+    ("G", "dotaccent", 0x120), ("g", "dotaccent", 0x121),
+    ("I", "macron", 0x12A), ("dotlessi", "macron", 0x12B), ("I", "dotaccent", 0x130),
+    ("L", "acute", 0x139), ("l", "acute", 0x13A),
+    ("N", "acute", 0x143), ("n", "acute", 0x144), ("N", "caron", 0x147), ("n", "caron", 0x148),
+    ("O", "hungarumlaut", 0x150), ("o", "hungarumlaut", 0x151),
+    ("R", "acute", 0x154), ("r", "acute", 0x155), ("R", "caron", 0x158), ("r", "caron", 0x159),
+    ("S", "acute", 0x15A), ("s", "acute", 0x15B), ("T", "caron", 0x164),
+    ("U", "macron", 0x16A), ("u", "macron", 0x16B), ("U", "ring", 0x16E), ("u", "ring", 0x16F),
+    ("U", "hungarumlaut", 0x170), ("u", "hungarumlaut", 0x171),
+    ("W", "circumflex", 0x174), ("w", "circumflex", 0x175), ("Y", "circumflex", 0x176), ("y", "circumflex", 0x177),
+    ("Z", "acute", 0x179), ("z", "acute", 0x17A), ("Z", "dotaccent", 0x17B), ("z", "dotaccent", 0x17C),
+    ("W", "grave", 0x1E80), ("w", "grave", 0x1E81), ("W", "acute", 0x1E82), ("w", "acute", 0x1E83),
+    ("W", "dieresis", 0x1E84), ("w", "dieresis", 0x1E85), ("Y", "grave", 0x1EF2), ("y", "grave", 0x1EF3),
+]
+for base, mark, cp in ABOVE:
+    name = ("i" if base == "dotlessi" else base) + mark
+    g(name, cp, G[base][1], MARKS[mark](_cx(base), _top_y(base)))
+
+BELOW = [  # (base, kind, codepoint, glyph name)
+    ("G", "comma", 0x122, "Gcommaaccent"), ("K", "comma", 0x136, "Kcommaaccent"), ("k", "comma", 0x137, "kcommaaccent"),
+    ("L", "comma", 0x13B, "Lcommaaccent"), ("l", "comma", 0x13C, "lcommaaccent"),
+    ("N", "comma", 0x145, "Ncommaaccent"), ("n", "comma", 0x146, "ncommaaccent"),
+    ("S", "cedilla", 0x15E, "Scedilla"), ("s", "cedilla", 0x15F, "scedilla"),
+    ("S", "comma", 0x218, "Scommaaccent"), ("s", "comma", 0x219, "scommaaccent"),
+    ("T", "comma", 0x21A, "Tcommaaccent"), ("t", "comma", 0x21B, "tcommaaccent"),
+]
+for base, kind, cp, name in BELOW:
+    cx = _cx(base) + (25 if base == "t" else 0)
+    g(name, cp, G[base][1], commabelow(cx) if kind == "comma" else cedilla(cx + 10))
+g("gcommaaccent", 0x123, G["g"][1], commaturned(_cx("g"), 600))
+
+
+def _ogonek_x(base):
+    minx, _, maxx, _ = G[base][1].bounds
+    return {"a": maxx - 40, "e": maxx - 75, "i": (minx + maxx) / 2 + 5, "u": maxx - 40,
+            "A": maxx - 55, "E": maxx - 95, "I": (minx + maxx) / 2 + 5, "U": maxx - 80}[base]
+
+
+for base, cp_up, cp_lo in (("A", 0x104, 0x105), ("E", 0x118, 0x119), ("I", 0x12E, 0x12F), ("U", 0x172, 0x173)):
+    g(base + "ogonek", cp_up, G[base][1], ogonek(_ogonek_x(base)))
+    lo = base.lower()
+    g(lo + "ogonek", cp_lo, G[lo][1], ogonek(_ogonek_x(lo)))
+
+# apostrophe-style carons on ascenders
+g("dcaron", 0x10F, G["d"][1], apostrophe_caron(300, 640))
+g("lcaron", 0x13E, G["l"][1], apostrophe_caron(140, 640))
+g("tcaron", 0x165, G["t"][1], apostrophe_caron(165, 640))
+g("Lcaron", 0x13D, G["L"][1], apostrophe_caron(160, 600))
+SELF_SPACED = {"dcaron", "lcaron", "tcaron"}
+
+# stroked letters
+g("Dcroat", 0x110, G["Eth"][1])
+g("dcroat", 0x111, G["d"][1], stroke([(118, 690), (300, 690)], WB))
+g("Hbar", 0x126, G["H"][1], stroke([(-8, 595), (320, 595)], WB))
+g("hbar", 0x127, G["h"][1], stroke([(-10, 690), (165, 690)], WB))
+g("Lslash", 0x141, G["L"][1], stroke([(-10, 300), (175, 470)], WB))
+g("lslash", 0x142, G["l"][1], stroke([(-45, 320), (130, 490)], WB))
+g("uni1E9E", 0x1E9E, stroke(path((H, 0), (H, 590), bz((H, 590), (H, 735), (110, TC), (180, TC)), (285, TC), (160, 445))),
+  stroke(bz((160, 445), (330, 450), (330, 15), (120, 40))))
+g("minus", 0x2212, stroke([(10, 300), (270, 300)], WB))
+
+# spacing accents
+g("caron", 0x2C7, caron(110, 640))
+g("breve", 0x2D8, breve(110, 640))
+g("dotaccent", 0x2D9, dotabove(70, 640))
+g("ring", 0x2DA, ring_m(80, 640))
+g("ogonek", 0x2DB, ogonek(120))
+g("hungarumlaut", 0x2DD, hungarumlaut(110, 640))
+
+# combining accents: zero width, drawn about x = 0, attached through anchors
+COMBINING = {
+    "gravecomb": (0x300, lambda: grave(0, 640), "top"), "acutecomb": (0x301, lambda: acute(0, 640), "top"),
+    "uni0302": (0x302, lambda: circ(0, 640), "top"), "tildecomb": (0x303, lambda: tilde_m(0, 640), "top"),
+    "uni0304": (0x304, lambda: macron_m(0, 640), "top"), "uni0306": (0x306, lambda: breve(0, 640), "top"),
+    "uni0307": (0x307, lambda: dotabove(0, 640), "top"), "uni0308": (0x308, lambda: diaer(0, 640), "top"),
+    "uni030A": (0x30A, lambda: ring_m(0, 640), "top"), "uni030B": (0x30B, lambda: hungarumlaut(0, 640), "top"),
+    "uni030C": (0x30C, lambda: caron(0, 640), "top"), "uni0326": (0x326, lambda: commabelow(0), "bottom"),
+    "uni0327": (0x327, lambda: cedilla(0), "bottom"), "uni0328": (0x328, lambda: ogonek(0), "ogonek"),
+}
+for name, (cp, fn, _) in COMBINING.items():
+    g(name, cp, fn())
+
+
+g("iogonek.dotless", None, G["dotlessi"][1], ogonek(_ogonek_x("i")))
+g("uni25CC", 0x25CC, *[Point(170 + 150 * math.cos(2 * math.pi * k / 12), 300 + 150 * math.sin(2 * math.pi * k / 12)).buffer(20, 16)
+                        for k in range(12)])
+
+
+def anchors_for(name):
+    """Anchors for mark attachment, in the glyph's own drawing coordinates."""
+    if name in COMBINING:
+        kind = COMBINING[name][2]
+        return {"_" + kind: (0, 560 if kind == "top" else 0)}
+    if name == "uni25CC":
+        return {"top": (170, 560), "bottom": (170, 0), "ogonek": (230, 0)}
+    uni = G[name][0]
+    ch = chr(uni) if uni else ""
+    if not (name in ("dotlessi", "dotlessj") or (ch.isalpha() and len(name) == 1)):
+        return {}
+    minx, _, maxx, _ = G[name][1].bounds
+    cx = (minx + maxx) / 2
+    top = 780 if name in ASCENDER_BASES else (560 if (name.islower() or name.startswith("dotless")) else 740)
+    out = {"top": (cx, top), "bottom": (cx, 0)}
+    if name in ("a", "e", "i", "u", "A", "E", "I", "U"):
+        out["ogonek"] = (_ogonek_x(name), 0)
+    return out
 
 # margins (lsb, rsb) — tighter for diagonals and open shapes
 SPACING = {k: (40, 40) for k in G}

@@ -1,0 +1,26 @@
+languagesystem DFLT dflt;
+languagesystem latn dflt;
+
+@CombiningTop = [acutecomb tildecomb uni030B uni0307 uni030C uni0306 uni0308 uni0304 uni030A gravecomb uni0302];
+@CombiningBottom = [uni0328 uni0327 uni0326];
+
+feature ccmp {
+    lookup soft_dotted {
+        sub i' @CombiningTop by dotlessi;
+        sub i' @CombiningBottom @CombiningTop by dotlessi;
+        sub i' @CombiningBottom @CombiningBottom @CombiningTop by dotlessi;
+        sub j' @CombiningTop by dotlessj;
+        sub j' @CombiningBottom @CombiningTop by dotlessj;
+        sub iogonek' @CombiningTop by iogonek.dotless;
+        sub iogonek' @CombiningBottom @CombiningTop by iogonek.dotless;
+    } soft_dotted;
+} ccmp;
+
+feature ss01 {
+    featureNames { name "Descending f"; };
+    sub f by f.ss01;
+} ss01;
+
+feature salt {
+    sub f by f.ss01;
+} salt;
