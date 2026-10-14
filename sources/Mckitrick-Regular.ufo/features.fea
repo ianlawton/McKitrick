@@ -1,8 +1,8 @@
 languagesystem DFLT dflt;
 languagesystem latn dflt;
 
-@CombiningTop = [acutecomb tildecomb uni030B uni0307 uni030C uni0306 uni0308 uni0304 uni030A gravecomb uni0302];
-@CombiningBottom = [uni0328 uni0327 uni0326];
+@CombiningTop = [acutecomb gravecomb tildecomb uni0302 uni0304 uni0306 uni0307 uni0308 uni030A uni030B uni030C];
+@CombiningBottom = [uni0326 uni0327 uni0328];
 
 feature ccmp {
     lookup soft_dotted {

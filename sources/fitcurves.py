@@ -10,7 +10,8 @@ import math
 
 CORNER_DEG = 32          # a turn sharper than this is a corner
 LINE_TOL = 0.9           # max distance from the chord for a run to count as straight
-FIT_TOL = 1.6            # max fitting error, font units
+LONG_EDGE = 60           # polygon edges at least this long are kept as straight lines
+FIT_TOL = 1.6           # max fitting error, font units
 
 
 def _sub(a, b): return (a[0] - b[0], a[1] - b[1])
@@ -179,7 +180,14 @@ def fit_ring(pts, corner_deg=CORNER_DEG, tol=FIT_TOL):
     n = len(clean)
     if n < 3:
         return []
-    corners = [i for i in range(n) if _turn(clean[i - 1], clean[i], clean[(i + 1) % n]) > corner_deg]
+    corners = {i for i in range(n) if _turn(clean[i - 1], clean[i], clean[(i + 1) % n]) > corner_deg}
+    # A long edge is a drawn straight (a stem or a diagonal), never a sample of a curve:
+    # pin both its ends so a shallow join (N's diagonal, the stem entering an arch)
+    # can't be smoothed into one bowed curve.
+    for i in range(n):
+        if _len(_sub(clean[(i + 1) % n], clean[i])) >= LONG_EDGE:
+            corners |= {i, (i + 1) % n}
+    corners = sorted(corners)
     smooth_close = not corners
     if smooth_close:  # a smooth closed shape (ring, ellipse): split at its four extremes
         ext = {min(range(n), key=lambda i: (clean[i][0], clean[i][1])),

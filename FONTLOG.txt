@@ -31,6 +31,12 @@ Lawton's direction and review.
 ChangeLog
 ---------
 
+14 October 2026 (Ian Lawton) Mckitrick v2.001
+- Fixed bowed stems and diagonals left by the curve fitting in v2.000:
+  N, M, Y, h, m, n, u, y, µ and ¥ (and their accented forms). Long straight
+  edges are now always kept straight, so every outline stays within about
+  2 units of the drawn shape
+
 9 October 2026 (Ian Lawton) Mckitrick v2.000
 - Family renamed from McKitrick to Mckitrick, following the Google Fonts
   naming rules

@@ -19,7 +19,7 @@ import spacing as SP
 import fitcurves as FC
 
 FAMILY = "Mckitrick"
-VERSION = (2, 0)
+VERSION = (2, 1)
 REPO = "https://github.com/ianlawton/McKitrick"
 UFO_PATH = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), f"{FAMILY}-Regular.ufo")
 
@@ -233,8 +233,8 @@ for (a, b), v in CLASS_KERN.items():
 for (a, b), v in EXCEPTIONS.items():
     u.kerning[(a, b)] = v
 
-tops = " ".join(n for n in COMBINING if GL.COMBINING[n][2] == "top")
-bottoms = " ".join(n for n in COMBINING if GL.COMBINING[n][2] != "top")
+tops = " ".join(n for n in sorted(COMBINING) if GL.COMBINING[n][2] == "top")
+bottoms = " ".join(n for n in sorted(COMBINING) if GL.COMBINING[n][2] != "top")
 u.features.text = f"""languagesystem DFLT dflt;
 languagesystem latn dflt;
 
