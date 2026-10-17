@@ -1,12 +1,12 @@
-# Mckitrick
+# McKitrick
 
-![Mckitrick specimen](documentation/specimen.png)
+![McKitrick specimen](documentation/specimen.png)
 
 Mckitrick is a condensed display typeface drawn from a single sheet of hand-cut marker sketches. Every letter is built from separate, flat-ended strokes that stop short of one another where they meet, the way the originals were drawn. The dots on i and j are tapered, wider at the top, and the same dot carries through the punctuation and accents. The name comes from an old Celtic surname, McKitrick; the family is spelled Mckitrick to follow the Google Fonts naming rules.
 
 It works best at display sizes: headings, posters, signs, labels and short lines of text.
 
-![Mckitrick in use](documentation/sample-in-use.png)
+![McKitrick in use](documentation/sample-in-use.png)
 
 ## Features
 
