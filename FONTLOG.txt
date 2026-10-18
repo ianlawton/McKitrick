@@ -31,6 +31,13 @@ Lawton's direction and review.
 ChangeLog
 ---------
 
+18 October 2026 (Ian Lawton) Mckitrick v2.004
+- Lightened the m, n and h shoulders: they taper where they leave the stem
+  and ease off over the crown, reaching full weight only as they become the
+  next stem
+- The undersides of the shoulders now curve gently, and the corners of the
+  counters (at the joint and under the crown) are rounded instead of sharp
+
 18 October 2026 (Ian Lawton) Mckitrick v2.003
 - Smoothed the tops of the m, n and h shoulders: the steep diagonal now
   curves over into the stem instead of meeting a flat, squared-off top

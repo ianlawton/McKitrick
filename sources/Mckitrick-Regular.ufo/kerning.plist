@@ -2097,12 +2097,12 @@
     <key>h</key>
     <dict>
       <key>lslash</key>
-      <integer>1</integer>
+      <integer>2</integer>
     </dict>
     <key>hbar</key>
     <dict>
       <key>lslash</key>
-      <integer>1</integer>
+      <integer>2</integer>
     </dict>
     <key>hyphen</key>
     <dict>
@@ -2785,7 +2785,7 @@
     <key>m</key>
     <dict>
       <key>lslash</key>
-      <integer>1</integer>
+      <integer>2</integer>
     </dict>
     <key>mu</key>
     <dict>
@@ -2795,22 +2795,22 @@
     <key>n</key>
     <dict>
       <key>lslash</key>
-      <integer>1</integer>
+      <integer>2</integer>
     </dict>
     <key>nacute</key>
     <dict>
       <key>lslash</key>
-      <integer>1</integer>
+      <integer>2</integer>
     </dict>
     <key>ncaron</key>
     <dict>
       <key>lslash</key>
-      <integer>1</integer>
+      <integer>2</integer>
     </dict>
     <key>ncommaaccent</key>
     <dict>
       <key>lslash</key>
-      <integer>1</integer>
+      <integer>2</integer>
     </dict>
     <key>nine</key>
     <dict>
@@ -2820,7 +2820,7 @@
     <key>ntilde</key>
     <dict>
       <key>lslash</key>
-      <integer>1</integer>
+      <integer>2</integer>
     </dict>
     <key>o</key>
     <dict>
@@ -6799,7 +6799,7 @@
       <key>public.kern2.one</key>
       <integer>-25</integer>
       <key>public.kern2.seven</key>
-      <integer>-30</integer>
+      <integer>-25</integer>
       <key>public.kern2.three</key>
       <integer>-30</integer>
       <key>question</key>
@@ -7223,7 +7223,7 @@
       <key>public.kern2.one</key>
       <integer>-25</integer>
       <key>public.kern2.seven</key>
-      <integer>-30</integer>
+      <integer>-25</integer>
       <key>public.kern2.three</key>
       <integer>-30</integer>
       <key>question</key>
@@ -7285,7 +7285,7 @@
       <key>public.kern2.one</key>
       <integer>-25</integer>
       <key>public.kern2.seven</key>
-      <integer>-30</integer>
+      <integer>-25</integer>
       <key>public.kern2.three</key>
       <integer>-30</integer>
       <key>question</key>

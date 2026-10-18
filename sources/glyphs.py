@@ -100,30 +100,76 @@ g("b", ord("b"), stem(H, 0, ASC), stroke(bowl_b))
 g("p", ord("p"), stem(H, DSC, XH), stroke(bowl_b))
 
 
-def _arch_shape(x0, x1, yc, ys, r, k=0.45):
+def taper_stroke(pts, widths):
+    """A stroke whose width varies along its centreline, with flat ends."""
+    L, R = [], []
+    n = len(pts)
+    for k, (p, w) in enumerate(zip(pts, widths)):
+        a, b = pts[max(k - 1, 0)], pts[min(k + 1, n - 1)]
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        l = math.hypot(dx, dy) or 1
+        nx, ny = -dy / l, dx / l
+        L.append((p[0] + nx * w / 2, p[1] + ny * w / 2))
+        R.append((p[0] - nx * w / 2, p[1] - ny * w / 2))
+    return Polygon(L + R[::-1]).buffer(0)
+
+
+def _ease(t):
+    return t * t * (3 - 2 * t)
+
+
+def _shoulder(x0, x1, yc, ys, r, w0, wtop, bow, k=0.45):
+    """Centreline: a gently bowed, steep diagonal from inside the left stem, then a
+    smooth turn down into the next stem. The width tapers: thin where it leaves the
+    stem, lighter over the crown, full stem weight where it becomes the stem."""
     P0, C = (x0, ys), (x1, yc)
     d = math.dist(P0, C)
     ux, uy = (C[0] - P0[0]) / d, (C[1] - P0[1]) / d
-    turn = bz((C[0] - ux * r, C[1] - uy * r), (C[0] - ux * r * k, C[1] - uy * r * k),
-              (x1, yc - r * k), (x1, yc - r), n=28)
-    return stroke(path(P0, turn, (x1, 0)))
+    nx, ny = -uy, ux
+    a = (C[0] - ux * r, C[1] - uy * r)
+    diag = bz(P0, (P0[0] + (a[0] - P0[0]) / 3 + nx * bow, P0[1] + (a[1] - P0[1]) / 3 + ny * bow),
+              (P0[0] + 2 * (a[0] - P0[0]) / 3 + nx * bow * 0.7, P0[1] + 2 * (a[1] - P0[1]) / 3 + ny * bow * 0.7),
+              a, n=20)
+    turn = bz(a, (C[0] - ux * r * k, C[1] - uy * r * k), (x1, yc - r * k), (x1, yc - r), n=28)
+    pts = diag[:-1] + turn
+    cum = [0.0]
+    for p, q in zip(pts, pts[1:]):
+        cum.append(cum[-1] + math.dist(p, q))
+    crown, T = cum[len(diag) - 1 + 10], cum[-1]
+    ws = [w0 + (wtop - w0) * _ease(c / crown) if c <= crown
+          else wtop + (W - wtop) * _ease((c - crown) / (T - crown)) for c in cum]
+    return taper_stroke(pts, ws), yc - r
 
 
-def arch(x0, x1, top=XH, ys=270, r=85, ov=OV // 2):
+def arch(x0, x1, top=XH, ys=270, r=85, w0=58, wtop=72, bow=10, ov=OV // 2):
     """The sketch's m shoulder: it branches from the stem about halfway up, rises
-    as a steep, nearly straight diagonal and curves smoothly over into the next
-    stem. The counters come to a point under each shoulder. The rounded top is
-    lifted to reach x-height plus a little overshoot, like the other round tops."""
+    as a steep diagonal and curves smoothly over into the next stem. The rounded
+    top reaches x-height plus a little overshoot, like the other round tops."""
     yc = top - H
     for _ in range(3):
-        shape = _arch_shape(x0, x1, yc, ys, r)
-        yc += (top + ov) - shape.bounds[3]
-    return _arch_shape(x0, x1, yc, ys, r)
+        s, _end = _shoulder(x0, x1, yc, ys, r, w0, wtop, bow)
+        yc += (top + ov) - s.bounds[3]
+    s, end = _shoulder(x0, x1, yc, ys, r, w0, wtop, bow)
+    return unary_union([s, stroke([(x1, 0), (x1, end + 1)])])
 
 
-g("n", ord("n"), stem(H, 0, XH), arch(H, 230))
-g("h", ord("h"), stem(H, 0, ASC), arch(H, 230))
-g("m", ord("m"), stem(H, 0, XH), arch(H, 210), arch(210, 378))
+def arched(stems_x, left_top, soften=24):
+    """n, h, m: a stem plus a shoulder to each following stem. The sharp corners
+    of each counter (at the crotch and under the crown) are rounded off."""
+    shape = unary_union([stem(stems_x[0], 0, left_top)] +
+                        [arch(a, b) for a, b in zip(stems_x, stems_x[1:])])
+    for a, b in zip(stems_x, stems_x[1:]):
+        raw = box(a + H, -200, b - H, XH).difference(shape)
+        parts = list(getattr(raw, "geoms", [raw]))
+        counter = min(parts, key=lambda q: q.bounds[1])        # the one open at the baseline
+        soft = counter.buffer(-soften, join_style="round").buffer(soften, join_style="round")
+        shape = unary_union([shape, counter.difference(soft)])
+    return clip(shape, lo=0)
+
+
+g("n", ord("n"), arched([H, 230], XH))
+g("h", ord("h"), arched([H, 230], ASC))
+g("m", ord("m"), arched([H, 210, 378], XH))
 g("u", ord("u"), stroke(path((H, XH), bz((H, 130), (57, -10), (215, -10), (230, 130)))),
   stem(230, 0, XH))
 g("f", ord("f"), stroke(path((H, 0), bz((H, 560), (H, 760), (80, 800), (185, 805)))),
