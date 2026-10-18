@@ -100,20 +100,25 @@ g("b", ord("b"), stem(H, 0, ASC), stroke(bowl_b))
 g("p", ord("p"), stem(H, DSC, XH), stroke(bowl_b))
 
 
-def arch(x0, x1, top=XH, ys=270, f=50, vx=40):
+def _arch_shape(x0, x1, yc, ys, r, k=0.45):
+    P0, C = (x0, ys), (x1, yc)
+    d = math.dist(P0, C)
+    ux, uy = (C[0] - P0[0]) / d, (C[1] - P0[1]) / d
+    turn = bz((C[0] - ux * r, C[1] - uy * r), (C[0] - ux * r * k, C[1] - uy * r * k),
+              (x1, yc - r * k), (x1, yc - r), n=28)
+    return stroke(path(P0, turn, (x1, 0)))
+
+
+def arch(x0, x1, top=XH, ys=270, r=85, ov=OV // 2):
     """The sketch's m shoulder: it branches from the stem about halfway up, rises
-    as a steep, nearly straight diagonal, rolls over at the top and turns hard
-    into the next stem, which keeps a flat top at x-height. The counters come to
-    a point under each shoulder."""
+    as a steep, nearly straight diagonal and curves smoothly over into the next
+    stem. The counters come to a point under each shoulder. The rounded top is
+    lifted to reach x-height plus a little overshoot, like the other round tops."""
     yc = top - H
-    P0, V = (x0, ys), (x1 - vx, yc)
-    d = math.dist(P0, V)
-    ux, uy = (V[0] - P0[0]) / d, (V[1] - P0[1]) / d
-    turn = bz((V[0] - ux * f, V[1] - uy * f), (V[0] - ux * f * 0.4, V[1] - uy * f * 0.4),
-              (V[0] + f * 0.4, yc), (V[0] + f, yc), n=20)
-    shoulder = stroke(path(P0, turn, (x1 + H + 20, yc)))
-    shape = unary_union([shoulder, stroke([(x1, 0), (x1, top)])])
-    return clip(shape.intersection(box(-1e4, -1e4, x1 + H, 1e4)), hi=top)
+    for _ in range(3):
+        shape = _arch_shape(x0, x1, yc, ys, r)
+        yc += (top + ov) - shape.bounds[3]
+    return _arch_shape(x0, x1, yc, ys, r)
 
 
 g("n", ord("n"), stem(H, 0, XH), arch(H, 230))

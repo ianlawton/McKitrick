@@ -31,6 +31,10 @@ Lawton's direction and review.
 ChangeLog
 ---------
 
+18 October 2026 (Ian Lawton) Mckitrick v2.003
+- Smoothed the tops of the m, n and h shoulders: the steep diagonal now
+  curves over into the stem instead of meeting a flat, squared-off top
+
 18 October 2026 (Ian Lawton) Mckitrick v2.002
 - Redrew the shoulders of m, n and h to follow the original sketch: each
   shoulder branches from the stem about halfway up, rises as a steep,
