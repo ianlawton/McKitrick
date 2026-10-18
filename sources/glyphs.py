@@ -100,9 +100,20 @@ g("b", ord("b"), stem(H, 0, ASC), stroke(bowl_b))
 g("p", ord("p"), stem(H, DSC, XH), stroke(bowl_b))
 
 
-def arch(x0, x1, top=XH):
-    return stroke(path(bz((x0, top - 120), (x0 + 15, top - 5), (x1 - 10, top + 10), (x1, top - 130)),
-                       (x1, 0)))
+def arch(x0, x1, top=XH, ys=270, f=50, vx=40):
+    """The sketch's m shoulder: it branches from the stem about halfway up, rises
+    as a steep, nearly straight diagonal, rolls over at the top and turns hard
+    into the next stem, which keeps a flat top at x-height. The counters come to
+    a point under each shoulder."""
+    yc = top - H
+    P0, V = (x0, ys), (x1 - vx, yc)
+    d = math.dist(P0, V)
+    ux, uy = (V[0] - P0[0]) / d, (V[1] - P0[1]) / d
+    turn = bz((V[0] - ux * f, V[1] - uy * f), (V[0] - ux * f * 0.4, V[1] - uy * f * 0.4),
+              (V[0] + f * 0.4, yc), (V[0] + f, yc), n=20)
+    shoulder = stroke(path(P0, turn, (x1 + H + 20, yc)))
+    shape = unary_union([shoulder, stroke([(x1, 0), (x1, top)])])
+    return clip(shape.intersection(box(-1e4, -1e4, x1 + H, 1e4)), hi=top)
 
 
 g("n", ord("n"), stem(H, 0, XH), arch(H, 230))

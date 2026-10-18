@@ -31,6 +31,12 @@ Lawton's direction and review.
 ChangeLog
 ---------
 
+18 October 2026 (Ian Lawton) Mckitrick v2.002
+- Redrew the shoulders of m, n and h to follow the original sketch: each
+  shoulder branches from the stem about halfway up, rises as a steep,
+  nearly straight diagonal and turns sharply into a flat-topped stem, so
+  the counters come to a point under the shoulder
+
 14 October 2026 (Ian Lawton) Mckitrick v2.001
 - Fixed bowed stems and diagonals left by the curve fitting in v2.000:
   N, M, Y, h, m, n, u, y, µ and ¥ (and their accented forms). Long straight
