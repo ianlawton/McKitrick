@@ -153,18 +153,23 @@ def arch(x0, x1, top=XH, ys=270, r=85, w0=58, wtop=72, bow=10, ov=OV // 2):
     return unary_union([s, stroke([(x1, 0), (x1, end + 1)])])
 
 
-def arched(stems_x, left_top, soften=24):
-    """n, h, m: a stem plus a shoulder to each following stem. The sharp corners
-    of each counter (at the crotch and under the crown) are rounded off."""
+def arched(stems_x, left_top, ws=62, ys=310, rad=10):
+    """n, h, m: a stem plus a shoulder to each following stem. The shoulder keeps
+    an even stroke width ws all the way over: each counter is the letter's outer
+    silhouette pulled in by ws, so its underside runs parallel to the top of the
+    shoulder, with only a small radius where it meets the stems."""
     shape = unary_union([stem(stems_x[0], 0, left_top)] +
-                        [arch(a, b) for a, b in zip(stems_x, stems_x[1:])])
+                        [arch(a, b, ys=ys, w0=ws, wtop=ws, bow=0) for a, b in zip(stems_x, stems_x[1:])])
     for a, b in zip(stems_x, stems_x[1:]):
-        raw = box(a + H, -200, b - H, XH).difference(shape)
-        parts = list(getattr(raw, "geoms", [raw]))
-        counter = min(parts, key=lambda q: q.bounds[1])        # the one open at the baseline
-        soft = counter.buffer(-soften, join_style="round").buffer(soften, join_style="round")
-        shape = unary_union([shape, counter.difference(soft)])
-    return clip(shape, lo=0)
+        raw = box(a + H, -300, b - H, XH).difference(shape)
+        counter = min(getattr(raw, "geoms", [raw]), key=lambda q: q.bounds[1])
+        filled = unary_union([shape, counter, box(-1000, -1000, 2000, 0)])
+        inner = filled.buffer(-ws, join_style="mitre", mitre_limit=10).intersection(box(a + H, -300, b - H, XH))
+        inner = max(getattr(inner, "geoms", [inner]), key=lambda q: q.area)
+        inner = inner.buffer(-rad, join_style="round").buffer(rad, join_style="round")
+        shape = filled.difference(inner)
+    out = clip(shape, lo=0)
+    return unary_union([q for q in getattr(out, "geoms", [out]) if q.geom_type == "Polygon" and q.area > 1])
 
 
 g("n", ord("n"), arched([H, 230], XH))

@@ -31,6 +31,12 @@ Lawton's direction and review.
 ChangeLog
 ---------
 
+18 October 2026 (Ian Lawton) Mckitrick v2.005
+- m, n and h shoulders now keep an even stroke width all the way over: the
+  underside runs parallel to the top, with only a small radius where it meets
+  the stems. The shoulder is a little lighter than the stems and branches
+  slightly higher, so the tops of these letters carry less ink in text
+
 18 October 2026 (Ian Lawton) Mckitrick v2.004
 - Lightened the m, n and h shoulders: they taper where they leave the stem
   and ease off over the crown, reaching full weight only as they become the
