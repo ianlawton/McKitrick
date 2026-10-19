@@ -24,3 +24,15 @@ feature ss01 {
 feature salt {
     sub f by f.ss01;
 } salt;
+
+feature case {
+    sub hyphen by hyphen.case;
+    sub endash by endash.case;
+    sub emdash by emdash.case;
+    sub guillemotleft by guillemotleft.case;
+    sub guillemotright by guillemotright.case;
+    sub guilsinglleft by guilsinglleft.case;
+    sub guilsinglright by guilsinglright.case;
+    sub periodcentered by periodcentered.case;
+    sub bullet by bullet.case;
+} case;

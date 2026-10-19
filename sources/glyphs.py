@@ -63,6 +63,15 @@ def clip(geom, lo=-10000, hi=10000):
     return geom.intersection(box(-10000, lo, 10000, hi))
 
 
+SUP_K, SUP_STEM = 0.58, 58     # superiors: 58% size, 58-unit stems (about 70% of the main stem)
+
+
+def lighten(geom, k, stem_w=SUP_STEM):
+    """Scale a glyph by k and bring its strokes up to stem_w, so small forms are lighter
+    than the text but not spindly."""
+    return affinity.scale(geom, k, k, origin=(0, 0)).buffer((stem_w - W * k) / 2, join_style=2, mitre_limit=10)
+
+
 G = {}      # name -> (unicode or None, shapely geometry)
 
 
@@ -87,16 +96,17 @@ g("j", ord("j"),
   dot(110, 660))
 g("k", ord("k"), stem(H, 0, ASC),
   stroke(bz((235, 545), (150, 500), (85, 400), (60, 250))),
-  stroke([(85, 310), (240, 0)]), lo=0)
+  stroke([(85, 310), (256, -31)]), lo=0)
 bowl_g = bz((205, 550), (0, 560), (5, 170), (200, 170))
 g("g", ord("g"), stroke(bowl_g),
   stroke(path((210, XH), bz((210, 60), (210, -90), (150, -170), (15, -190)))))
 bowl_a = bz((205, 550), (-5, 560), (-5, 20), (205, 40))
-g("a", ord("a"), stroke(bowl_a), stem(210, 0, XH))
-g("d", ord("d"), stroke(bowl_a), stem(210, 0, ASC))
+FOOT = box(210 - H, -50, 210 + H, 0)   # under the a/d stem: keep the bowl overshoot off the stem foot
+g("a", ord("a"), unary_union([stroke(bowl_a), stem(210, 0, XH)]).difference(FOOT))
+g("d", ord("d"), unary_union([stroke(bowl_a), stem(210, 0, ASC)]).difference(FOOT))
 g("q", ord("q"), stroke(bowl_a), stem(210, DSC, XH))
 bowl_b = bz((H + 5, 545), (265, 580), (265, -20), (H + 5, 30))
-g("b", ord("b"), stem(H, 0, ASC), stroke(bowl_b))
+g("b", ord("b"), stem(H, 0, ASC), stroke(path(bz((H + 5, 545), (265, 580), (275, H), (W, H)), (H, H))))
 g("p", ord("p"), stem(H, DSC, XH), stroke(bowl_b))
 
 
@@ -200,16 +210,18 @@ g("z", ord("z"), stroke([(10, XH - 40), (225, XH - 40), (35, 40), (240, 40)], WB
 
 # ---------------------------------------------------------------- capitals
 TC = CAP - 42
+BAR = WB + 10                 # weight of the E/F/L/T/Z bars
+BT, BB = CAP - BAR / 2, BAR / 2   # bar centres that sit flush with cap height and baseline
 g("A", ord("A"), stroke([(10, -20), (150, CAP + 40), (290, -20)]),
   stroke([(70, 250), (230, 250)], WB), lo=0, hi=CAP)
 g("B", ord("B"), stem(H, 0, CAP),
-  stroke(bz((H, TC), (255, 750), (255, 400), (H, 410))),
-  stroke(bz((H, 410), (300, 420), (300, 25), (H, H))))
+  stroke(path((H, TC), bz((W, TC), (265, TC), (255, 400), (H, 410)))),
+  stroke(path(bz((H, 410), (310, 420), (310, H), (W, H)), (H, H))))
 g("C", ord("C"), stroke(bz((290, 725), (20, 700), (0, 50), (290, 25))))
-g("D", ord("D"), stem(H, 0, CAP), stroke(bz((H, TC), (330, 750), (330, 10), (H, H))))
-g("E", ord("E"), stem(H, 0, CAP), stroke([(H, TC), (245, TC)], WB + 10),
-  stroke([(H, 400), (215, 400)], WB), stroke([(H, H), (255, H)], WB + 10))
-g("F", ord("F"), stem(H, 0, CAP), stroke([(H, TC), (245, TC)], WB + 10),
+g("D", ord("D"), stem(H, 0, CAP), stroke(path((H, TC), bz((W, TC), (345, TC), (345, H), (W, H)), (H, H))))
+g("E", ord("E"), stem(H, 0, CAP), stroke([(H, BT), (245, BT)], BAR),
+  stroke([(H, 400), (215, 400)], WB), stroke([(H, BB), (255, BB)], BAR))
+g("F", ord("F"), stem(H, 0, CAP), stroke([(H, BT), (245, BT)], BAR),
   stroke([(H, 400), (215, 400)], WB))
 g("G", ord("G"), stroke(path(bz((295, 725), (20, 700), (0, 50), (285, 30)), (285, 330))),
   stroke([(175, 330), (300, 330)], WB))
@@ -217,22 +229,22 @@ g("H", ord("H"), stem(H, 0, CAP), stem(270, 0, CAP), stroke([(H, 400), (270, 400
 g("I", ord("I"), stem(H, 0, CAP))
 g("J", ord("J"), stroke(path((200, CAP), bz((200, 140), (200, -20), (60, -30), (10, 70)))))
 g("K", ord("K"), stem(H, 0, CAP),
-  stroke(bz((300, 745), (200, 680), (100, 520), (60, 360))),
-  stroke([(95, 430), (305, -10)]), lo=0, hi=CAP)
-g("L", ord("L"), stem(H, 0, CAP), stroke([(H, H), (250, H)], WB + 10))
+  stroke(bz((300, 745), (200, 680), (90, 520), (H, 330))),
+  stroke([(95, 430), (320, -41)]), lo=0, hi=CAP)
+g("L", ord("L"), stem(H, 0, CAP), stroke([(H, BB), (250, BB)], BAR))
 g("M", ord("M"), stem(H, 0, CAP), stem(380, 0, CAP),
   stroke([(H, CAP + 40), (211, 230), (380, CAP + 40)]), lo=0, hi=CAP)
 g("N", ord("N"), stem(H, 0, CAP), stem(285, 0, CAP),
-  stroke([(30, CAP + 30), (297, -30)]), lo=0, hi=CAP)
+  stroke([(30, CAP + 30), (297, -30)]).intersection(box(0, -1e4, 285 + H, 1e4)), lo=0, hi=CAP)
 g("O", ord("O"), ring(165, 380, 123, 338 + OV))
-g("P", ord("P"), stem(H, 0, CAP), stroke(bz((H, TC), (300, 750), (300, 330), (H, 345))))
+g("P", ord("P"), stem(H, 0, CAP), stroke(path((H, TC), bz((W, TC), (310, TC), (300, 330), (H, 345)))))
 g("Q", ord("Q"), ring(165, 380, 123, 338 + OV), stroke([(175, 140), (300, -110)]))
-g("R", ord("R"), stem(H, 0, CAP), stroke(bz((H, TC), (300, 750), (300, 330), (H, 345))),
-  stroke([(140, 360), (300, -10)]), lo=0)
+g("R", ord("R"), stem(H, 0, CAP), stroke(path((H, TC), bz((W, TC), (310, TC), (300, 330), (H, 345)))),
+  stroke([(140, 360), (311, -36)]), lo=0)
 g("S", ord("S"), stroke(path(bz((215, 690), (160, 755), (45, 740), (48, 585)),
                               bz((48, 585), (52, 420), (222, 410), (222, 215)),
                               bz((222, 215), (222, 25), (80, 10), (30, 75)))))
-g("T", ord("T"), stroke([(0, TC), (300, TC)], WB + 10), stem(150, 0, CAP))
+g("T", ord("T"), stroke([(0, BT), (300, BT)], BAR), stem(150, 0, CAP))
 g("U", ord("U"), stroke(path((H, CAP), (H, 200), bz((H, 200), (H, -25), (270, -25), (270, 200)),
                               (270, CAP))))
 g("V", ord("V"), stroke([(10, CAP + 30), (150, -10), (290, CAP + 30)]), lo=0, hi=CAP)
@@ -242,24 +254,24 @@ g("X", ord("X"), stroke([(15, CAP + 20), (295, -20)]), stroke([(295, CAP + 20), 
   lo=0, hi=CAP)
 g("Y", ord("Y"), stroke([(10, CAP + 30), (155, 360), (300, CAP + 30)]), stem(155, 0, 380),
   lo=0, hi=CAP)
-g("Z", ord("Z"), stroke([(15, TC), (280, TC), (40, H), (295, H)], WB + 10), lo=0, hi=CAP)
+g("Z", ord("Z"), stroke([(15, BT), (280, BT), (40, BB), (295, BB)], BAR), lo=0, hi=CAP)
 
 # ---------------------------------------------------------------- figures
 TF = FIG - 42
 g("zero", ord("0"), ring(145, 360, 103, 318 + OV))
-g("one", ord("1"), stem(160, 0, FIG), stroke([(160, FIG - 25), (40, 580)], WB))
-g("two", ord("2"), stroke(path(bz((30, 590), (60, 750), (265, 750), (255, 560)),
+g("one", ord("1"), stem(160, 0, FIG), stroke([(160, FIG - 25), (40, 580)], WB), hi=FIG)
+g("two", ord("2"), stroke(path(bz((30, 590), (60, 735), (265, 735), (255, 560)),
                                 bz((255, 560), (245, 380), (40, 220), (40, H)))),
-  stroke([(15, H), (280, H)], WB + 10))
+  stroke([(15, BAR / 2), (280, BAR / 2)], WB + 10))
 g("three", ord("three") if False else ord("3"),
-  stroke(path(bz((30, 620), (90, 760), (265, 740), (255, 560)),
+  stroke(path(bz((30, 620), (90, 735), (265, 715), (255, 560)),
               bz((255, 560), (245, 430), (150, 400), (115, 400)))),
-  stroke(path(bz((115, 400), (310, 400), (310, -15), (25, 60)))))
+  stroke(path(bz((115, 400), (310, 400), (310, -85), (25, 50)))))
 g("four", ord("4"), stroke([(215, -20), (215, FIG), (25, 250), (290, 250)]), lo=0, hi=FIG)
 g("five", ord("5"), stroke(path((265, TF), (60, TF), (52, 430),
-                                 bz((52, 430), (290, 480), (310, -10), (25, 50)))))
-g("six", ord("six") if False else ord("6"), ring(150, 215, 105, 173),
-  stroke(bz((250, 705), (80, 650), (H + 3, 420), (H + 3, 215))))
+                                 bz((52, 430), (290, 480), (310, -70), (25, 40)))))
+g("six", ord("six") if False else ord("6"), ring(150, 215, 105, 173 + OV),
+  stroke(bz((250, 697), (80, 642), (H + 3, 420), (H + 3, 215))))
 
 
 def rot180(geom, w, h):
@@ -333,7 +345,7 @@ g("ampersand", ord("&"),
               bz((145, CAP - H), (55, CAP - H), (30, 590), (95, 480)))),
   clip(stroke([(73, 534), (305, -40)]), 0))
 g("percent", ord("%"), ring(80, 600, 45, 110, 64), ring(260, 140, 45, 110, 64),
-  stroke([(20, -10), (320, 730)], 64), lo=0, hi=FIG)
+  clip(stroke([(11, -32), (329, 752)], 64), 0, FIG))
 g("numbersign", ord("#"), stroke([(90, 60), (130, 640)], WB), stroke([(210, 60), (250, 640)], WB),
   stroke([(20, 450), (310, 450)], WB), stroke([(10, 250), (300, 250)], WB))
 g("at", ord("@"), ring(220, 300, 180, 330, 60),
@@ -391,7 +403,13 @@ for base, cp in (("c", 0xE7), ("C", 0xC7)):
 g("oe", 0x153, ring(125, 280, 83, 238 + OV),
   affinity.translate(G["e"][1], 175, 0))
 g("OE", 0x152, ring(165, 380, 123, 338 + OV), affinity.translate(G["E"][1], 250, 0))
-g("ae", 0xE6, stroke(bowl_a), stem(210, 0, XH), affinity.translate(G["e"][1], 170, 0))
+_e_in_ae = affinity.translate(G["e"][1], 170, 0)
+# the a stem's foot runs flat until the e's outer curve crosses the baseline, so they meet cleanly
+_hits = _e_in_ae.exterior.intersection(LineString([(210 + H - 5, 0), (420, 0)]))
+_cross = min(q.x for q in getattr(_hits, "geoms", [_hits]))
+_ae = unary_union([G["a"][1], _e_in_ae]).difference(box(210 - H, -50, _cross, 0))
+_notch = box(210 + H - 1, 0, _cross, 12).difference(_ae)     # sliver between stem foot and e curve
+g("ae", 0xE6, unary_union([_ae, _notch]))
 
 # ================================================================ v1.5: Latin-1 / Windows-1252
 def tilde_m(cx, y):
@@ -436,8 +454,8 @@ g("germandbls", 0xDF, stroke(path((H, 0), (H, 590), bz((H, 590), (H, 810), (232,
                                   bz((232, 630), (232, 500), (150, 470), (120, 452)))),
   stroke(bz((120, 452), (300, 430), (300, 15), (110, 35))))
 g("AE", 0xC6, stroke([(10, -20), (225, CAP + 30)]), stem(225, 0, CAP),
-  stroke([(80, 250), (225, 250)], WB), stroke([(225, TC), (420, TC)], WB + 10),
-  stroke([(225, 400), (385, 400)], WB), stroke([(225, H), (430, H)], WB + 10), lo=0, hi=CAP)
+  stroke([(80, 250), (225, 250)], WB), stroke([(225, BT), (420, BT)], BAR),
+  stroke([(225, 400), (385, 400)], WB), stroke([(225, BB), (430, BB)], BAR), lo=0, hi=CAP)
 g("Eth", 0xD0, G["D"][1], stroke([(0, 380), (140, 380)], WB))
 g("eth", 0xF0, ring(125, 260, 83, 218 + OV),
   stroke(bz((205, 330), (215, 560), (150, 720), (60, 790)), 74),
@@ -484,14 +502,14 @@ g("degree", 0xB0, ring(110, 640, 72, 72, 52))
 g("plusminus", 0xB1, stroke([(10, 360), (270, 360)], WB), stroke([(140, 230), (140, 490)], WB),
   stroke([(10, 100), (270, 100)], WB))
 g("acute", 0xB4, acute(90, 640))
-_bowl = affinity.translate(affinity.scale(Point(0, 0).buffer(1, 64), 140, 190, origin=(0, 0)), 175, 570)
+_bowl = affinity.translate(affinity.scale(Point(0, 0).buffer(1, 64), 100, 190, origin=(0, 0)), 135, 570)
 g("paragraph", 0xB6, stem(170, -150, CAP, 70), stem(290, -150, CAP, 70),
-  _bowl.intersection(box(-1000, -1000, 175, 2000)))
+  _bowl.intersection(box(-1000, -1000, 140, 2000)))
 g("cedilla", 0xB8, cedilla(90))
-g("ordfeminine", 0xAA, affinity.translate(affinity.scale(G["a"][1], 0.6, 0.6, origin=(0, 0)), 20, 420).buffer(12, join_style=2),
-  stroke([(20, 370), (190, 370)], 50))
-g("ordmasculine", 0xBA, affinity.translate(affinity.scale(G["o"][1], 0.6, 0.6, origin=(0, 0)), 20, 420).buffer(12, join_style=2),
-  stroke([(20, 370), (190, 370)], 50))
+g("ordfeminine", 0xAA, affinity.translate(lighten(G["a"][1], 0.6), 20, 420),
+  stroke([(20, 370), (190, 370)], 44))
+g("ordmasculine", 0xBA, affinity.translate(lighten(G["o"][1], 0.6), 20, 420),
+  stroke([(20, 370), (190, 370)], 44))
 g("guillemotleft", 0xAB, stroke([(140, 480), (30, 300), (140, 120)], 66), stroke([(270, 480), (160, 300), (270, 120)], 66))
 g("guillemotright", 0xBB, stroke([(30, 480), (140, 300), (30, 120)], 66), stroke([(160, 480), (270, 300), (160, 120)], 66))
 g("guilsinglleft", 0x2039, stroke([(140, 480), (30, 300), (140, 120)], 66))
@@ -500,19 +518,19 @@ g("multiply", 0xD7, stroke([(30, 170), (250, 430)], WB), stroke([(30, 430), (250
 g("divide", 0xF7, stroke([(10, 300), (270, 300)], WB), dot(140, 400, h=95, wb=70, wt=96), dot(140, 105, h=95, wb=70, wt=96))
 
 
-def sup(name, dx=0, y=400, k=0.56):
-    gm = G[name][1]
+def sup(name, dx=0, y=400, k=SUP_K):
+    gm = lighten(G[name][1], k)
     minx = gm.bounds[0]
-    return affinity.translate(affinity.scale(gm, k, k, origin=(minx, 0)), -minx + dx, y).buffer(14, join_style=2)
+    return affinity.translate(gm, -minx + dx, y)
 
 
 g("onesuperior", 0xB9, sup("one"))
 g("twosuperior", 0xB2, sup("two"))
 g("threesuperior", 0xB3, sup("three"))
 _fs = stroke([(40, -20), (330, 740)], 56)
-g("onequarter", 0xBC, sup("one", 0), _fs, sup("four", 210, 0))
-g("onehalf", 0xBD, sup("one", 0), _fs, sup("two", 210, 0))
-g("threequarters", 0xBE, sup("three", 0), affinity.translate(_fs, 40, 0), sup("four", 250, 0))
+g("onequarter", 0xBC, sup("one", 0), _fs, sup("four", 250, 0))
+g("onehalf", 0xBD, sup("one", 0), _fs, sup("two", 250, 0))
+g("threequarters", 0xBE, sup("three", 0), affinity.translate(_fs, 40, 0), sup("four", 290, 0))
 g("uni00A0", 0xA0)
 
 # --- Windows-1252 extras
@@ -610,11 +628,15 @@ BELOW = [  # (base, kind, codepoint, glyph name)
     ("S", "cedilla", 0x15E, "Scedilla"), ("s", "cedilla", 0x15F, "scedilla"),
     ("S", "comma", 0x218, "Scommaaccent"), ("s", "comma", 0x219, "scommaaccent"),
     ("T", "comma", 0x21A, "Tcommaaccent"), ("t", "comma", 0x21B, "tcommaaccent"),
+    ("T", "cedilla", 0x162, "Tcedilla"), ("t", "cedilla", 0x163, "tcedilla"),
 ]
 for base, kind, cp, name in BELOW:
     cx = _cx(base) + (25 if base == "t" else 0)
+    if kind == "cedilla" and base == "t":
+        cx = H        # ţ: the cedilla hangs from the stem, as on Ţ
     g(name, cp, G[base][1], commabelow(cx) if kind == "comma" else cedilla(cx + 10))
-g("gcommaaccent", 0x123, G["g"][1], commaturned(_cx("g"), 600))
+_tc = commaturned(_cx("g"), 0)     # ģ: the turned comma floats clear of the bowl, like the other accents on g
+g("gcommaaccent", 0x123, G["g"][1], affinity.translate(_tc, 0, G["g"][1].bounds[3] + 50 - _tc.bounds[1]))
 
 
 def _ogonek_x(base):
@@ -638,7 +660,7 @@ SELF_SPACED = {"dcaron", "lcaron", "tcaron"}
 # stroked letters
 g("Dcroat", 0x110, G["Eth"][1])
 g("dcroat", 0x111, G["d"][1], stroke([(118, 690), (300, 690)], WB))
-g("Hbar", 0x126, G["H"][1], stroke([(-8, 595), (320, 595)], WB))
+g("Hbar", 0x126, G["H"][1], stroke([(-34, 595), (346, 595)], WB))
 g("hbar", 0x127, G["h"][1], stroke([(-10, 690), (165, 690)], WB))
 g("Lslash", 0x141, G["L"][1], stroke([(-10, 300), (175, 470)], WB))
 g("lslash", 0x142, G["l"][1], stroke([(-45, 320), (130, 490)], WB))
@@ -707,3 +729,13 @@ for name in ["periodcentered", "period", "comma", "colon", "semicolon", "exclam"
     SPACING[name] = (25, 25)
 SPACING["f.ss01"] = (28, 22)
 SPACE_WIDTH = 210
+
+# ---------------------------------------------------------------- all-caps forms (case feature)
+# Dashes, guillemets and the middle dot are centred on the x-height for lowercase;
+# these copies are centred on the cap height for text set in capitals.
+CASE = ["hyphen", "endash", "emdash", "guillemotleft", "guillemotright", "guilsinglleft",
+        "guilsinglright", "periodcentered", "bullet"]
+for _n in CASE:
+    if _n in G:
+        _b = G[_n][1].bounds
+        g(_n + ".case", None, affinity.translate(G[_n][1], 0, CAP / 2 - (_b[1] + _b[3]) / 2))

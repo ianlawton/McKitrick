@@ -10,12 +10,12 @@
       <point x="131" y="560" type="line"/>
       <point x="47" y="560" type="line"/>
       <point x="47" y="60" type="line" smooth="yes"/>
-      <point x="46" y="-22"/>
-      <point x="40" y="-101"/>
+      <point x="47" y="-22"/>
+      <point x="39" y="-101"/>
       <point x="-40" y="-143" type="curve"/>
       <point x="-1" y="-217" type="line"/>
-      <point x="109" y="-159"/>
-      <point x="130" y="-56"/>
+      <point x="108" y="-160"/>
+      <point x="131" y="-56"/>
     </contour>
   </outline>
 </glyph>

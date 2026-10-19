@@ -150,6 +150,7 @@
     <array>
       <string>T</string>
       <string>Tcaron</string>
+      <string>Tcedilla</string>
       <string>Tcommaaccent</string>
     </array>
     <key>public.kern1.Thorn</key>
@@ -399,6 +400,7 @@
     <key>public.kern1.t</key>
     <array>
       <string>t</string>
+      <string>tcedilla</string>
       <string>tcommaaccent</string>
     </array>
     <key>public.kern1.tcaron</key>
@@ -616,6 +618,7 @@
     <array>
       <string>T</string>
       <string>Tcaron</string>
+      <string>Tcedilla</string>
       <string>Tcommaaccent</string>
     </array>
     <key>public.kern2.Thorn</key>
@@ -865,6 +868,7 @@
     <key>public.kern2.t</key>
     <array>
       <string>t</string>
+      <string>tcedilla</string>
       <string>tcommaaccent</string>
     </array>
     <key>public.kern2.tcaron</key>

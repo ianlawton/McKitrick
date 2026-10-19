@@ -10,12 +10,13 @@ It works best at display sizes: headings, posters, signs, labels and short lines
 
 ## Features
 
-- **Regular** weight, 338 glyphs
+- **Regular** weight, 349 glyphs
 - **Google Fonts Latin Core** coverage: English and the Western, Central and Eastern European languages that use the Latin alphabet, including French, German, Spanish, Portuguese, Polish, Czech, Slovak, Hungarian, Romanian, Turkish, Croatian, Slovenian, Latvian, Lithuanian, Maltese and Welsh
 - Combining accents with mark positioning, and soft-dotted i and j
 - Smooth cubic outlines with points on extremes
 - Optical spacing and class-based kerning, with exceptions so accents never collide
 - Stylistic set 1 (`ss01`, also `salt`): an alternative **f** with a long descender
+- Case-sensitive forms (`case`): hyphens, dashes, guillemets and the middle dot rise to suit text set in capitals
 
 ![Mckitrick character set](documentation/charset.png)
 
@@ -25,7 +26,7 @@ The fonts are in [`fonts/`](fonts):
 
 | Folder | Format | Use |
 |---|---|---|
-| `fonts/otf` | OpenType (CFF) | Desktop apps on macOS and Windows |
+| `fonts/otf` | OpenType (CFF), hinted | Desktop apps on macOS and Windows |
 | `fonts/ttf` | TrueType, hinted | Desktop apps, Android, older software |
 | `fonts/webfonts` | WOFF2 | Websites |
 

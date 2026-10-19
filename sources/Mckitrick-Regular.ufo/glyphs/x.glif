@@ -22,8 +22,9 @@
       <point x="227" y="0" type="line"/>
       <point x="317" y="0" type="line"/>
       <point x="211" y="277" type="line"/>
-      <point x="245" y="372"/>
-      <point x="279" y="467"/>
+      <point x="235" y="343" type="line" smooth="yes"/>
+      <point x="261" y="416"/>
+      <point x="288" y="488"/>
     </contour>
   </outline>
 </glyph>

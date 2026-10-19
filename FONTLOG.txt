@@ -10,10 +10,10 @@ Basic Font Information
 
 Mckitrick is a condensed display typeface drawn from a sheet of hand-cut
 marker sketches. Each letter is built from separate flat-ended strokes; the
-dots on i and j taper, wider at the top. One weight (Regular), 338 glyphs,
+dots on i and j taper, wider at the top. One weight (Regular), 349 glyphs,
 covering the Google Fonts Latin Core character set. OpenType features: kern,
-mark, ccmp (soft-dotted i and j), and ss01/salt for an alternative f with a
-long descender.
+mark, ccmp (soft-dotted i and j), case (capital-height dashes and
+guillemets), and ss01/salt for an alternative f with a long descender.
 
 The glyphs are defined as centre-line strokes in Python (sources/glyphs.py)
 and expanded to outlines, which are fitted with smooth cubic curves
@@ -30,6 +30,25 @@ Lawton's direction and review.
 
 ChangeLog
 ---------
+
+19 October 2026 (Ian Lawton) Mckitrick v2.006
+- Straight edges are now single straight lines: the bars of E F L T Z Æ Œ
+  sit flush with the cap height and baseline, the bowls of B D P R b leave
+  the stem square, and the a/d/æ bowls no longer dip below the stem foot.
+  Diagonal feet (K R k) and the N diagonal are cut cleanly; redundant points
+  on straight lines are removed and small corner curves stay curves
+- Ħ crossbar extends clearly beyond the stems
+- Added Ţ ţ (T and t with cedilla)
+- Kerning keeps the f and the descending f (ss01) clear of quotes and of
+  accents on the following letter (ï ì î ğ č š ř and others)
+- Superiors, ordinals and fractions redrawn lighter (stems about 70% of the
+  main stem) on a shared baseline; fraction parts no longer touch the slash
+- Figures 2 3 5 6 9: round tops and bottoms overshoot consistently with 0
+- ģ: the turned-comma accent floats clear of the bowl
+- New case feature: hyphen, dashes, guillemets, middle dot and bullet centred
+  on the cap height for all-caps text
+- The OTF is now hinted (otfautohint) and no longer carries a TrueType prep
+  table
 
 18 October 2026 (Ian Lawton) Mckitrick v2.005
 - m, n and h shoulders now keep an even stroke width all the way over: the

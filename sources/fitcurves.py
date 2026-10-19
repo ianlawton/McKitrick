@@ -10,6 +10,7 @@ import math
 
 CORNER_DEG = 32          # a turn sharper than this is a corner
 LINE_TOL = 0.9           # max distance from the chord for a run to count as straight
+MIN_BEND = 12            # a short run that turns more than this is a small curve, not a facet
 LONG_EDGE = 60           # polygon edges at least this long are kept as straight lines
 FIT_TOL = 1.6           # max fitting error, font units
 
@@ -126,6 +127,10 @@ def _turn(a, b, c):
     return math.degrees(math.acos(max(-1.0, min(1.0, _dot(v1, v2)))))
 
 
+def _angle(u, v):
+    return math.degrees(math.acos(max(-1.0, min(1.0, _dot(_norm(u), _norm(v))))))
+
+
 def _dist_to_chord(p, a, b):
     ab = _sub(b, a)
     L = _len(ab)
@@ -177,6 +182,15 @@ def fit_ring(pts, corner_deg=CORNER_DEG, tol=FIT_TOL):
             clean.append(p)
     if len(clean) > 1 and _len(_sub(clean[0], clean[-1])) <= 0.05:
         clean.pop()
+    # drop points that sit on the straight line between their neighbours, so a
+    # straight edge is seen as one edge (and its true length is known)
+    k = 0
+    while len(clean) > 3 and k < len(clean):
+        a_, b_, c_ = clean[k - 1], clean[k], clean[(k + 1) % len(clean)]
+        if _dist_to_chord(b_, a_, c_) < 0.02 and _dot(_sub(b_, a_), _sub(c_, b_)) > 0:
+            del clean[k]
+        else:
+            k += 1
     n = len(clean)
     if n < 3:
         return []
@@ -205,15 +219,23 @@ def fit_ring(pts, corner_deg=CORNER_DEG, tol=FIT_TOL):
             run.append(clean[i])
             if i == cj:
                 break
-        if len(run) == 2 or max(_dist_to_chord(p, run[0], run[-1]) for p in run[1:-1]) <= LINE_TOL:
+        flat = len(run) == 2 or max(_dist_to_chord(p, run[0], run[-1]) for p in run[1:-1]) <= LINE_TOL
+        bends = len(run) > 2 and _angle(_sub(run[1], run[0]), _sub(run[-1], run[-2])) > MIN_BEND
+        if flat and not bends:
             segs.append(("line", run[0], run[-1]))
             continue
         if smooth_close:
             t1 = _norm(_sub(clean[(ci + 1) % n], clean[ci - 1]))
             t2 = _mul(_norm(_sub(clean[(cj + 1) % n], clean[cj - 1])), -1)
         else:
+            # where a curve leaves a straight edge without a real corner, carry the
+            # edge's direction into the curve so the join is smooth
             t1 = _norm(_sub(run[1], run[0]))
             t2 = _norm(_sub(run[-2], run[-1]))
+            if _turn(clean[ci - 1], clean[ci], clean[(ci + 1) % n]) <= corner_deg:
+                t1 = _norm(_sub(clean[ci], clean[ci - 1]))
+            if _turn(clean[cj - 1], clean[cj], clean[(cj + 1) % n]) <= corner_deg:
+                t2 = _mul(_norm(_sub(clean[(cj + 1) % n], clean[cj])), -1)
         for c in _fit(run, t1, t2, tol):
             for cc in _split_extrema(c):
                 segs.append(("curve",) + tuple(cc))
@@ -237,7 +259,48 @@ def round_segments(segs):
                 out.append(("line", a, b))
             else:
                 out.append(("curve", a, c1, c2, b))
-    return out
+    return _merge_collinear(_drop_stubs(out))
+
+
+def _drop_stubs(segs):
+    """Remove straight stubs under 2 units long (rounding leftovers where two edges
+    meet), joining the neighbouring segments at one point."""
+    i = 0
+    while len(segs) > 3 and i < len(segs):
+        s = segs[i]
+        if s[0] == "line" and math.hypot(s[2][0] - s[1][0], s[2][1] - s[1][1]) < 2:
+            j, h = (i + 1) % len(segs), i - 1
+            nxt, prv = segs[j], segs[h]
+            if nxt[0] == "line" and prv[0] == "curve":
+                # keep the straight line exact: let the curve absorb the stub
+                segs[h] = prv[:-1] + (s[2],)
+            else:
+                segs[j] = (nxt[0], s[1]) + tuple(nxt[2:])
+            del segs[i]
+        else:
+            i += 1
+    return segs
+
+
+def _merge_collinear(segs):
+    """Join consecutive straight lines that continue in the same direction, so a
+    straight edge is a single line with one node at each end."""
+    def straight_on(a, b, c):
+        cross = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0])
+        dot = (b[0] - a[0]) * (c[0] - b[0]) + (b[1] - a[1]) * (c[1] - b[1])
+        return dot > 0 and abs(cross) <= 0.5 * math.hypot(c[0] - a[0], c[1] - a[1])
+    changed = True
+    while changed and len(segs) > 2:
+        changed = False
+        for i in range(len(segs)):
+            s, t = segs[i], segs[(i + 1) % len(segs)]
+            if s[0] == t[0] == "line" and straight_on(s[1], s[2], t[2]):
+                j = (i + 1) % len(segs)
+                segs[i] = ("line", s[1], t[2])
+                del segs[j]
+                changed = True
+                break
+    return segs
 
 
 def draw_segments(pen, segs):

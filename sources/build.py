@@ -19,7 +19,7 @@ import spacing as SP
 import fitcurves as FC
 
 FAMILY = "Mckitrick"
-VERSION = (2, 5)
+VERSION = (2, 6)
 REPO = "https://github.com/ianlawton/McKitrick"
 UFO_PATH = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), f"{FAMILY}-Regular.ufo")
 
@@ -29,7 +29,14 @@ COMBINING = set(GL.COMBINING)
 SELF_SPACED = set(GL.SELF_SPACED)
 
 
+ALIASES = {}   # glyphs spaced and kerned exactly like another (name -> original)
+
+
 def base_of(name):
+    if name in ALIASES:
+        return ALIASES[name]
+    if name.endswith(".case"):      # all-caps forms space like the original
+        return name[:-5]
     if name in SELF_SPACED or name in COMBINING:
         return name
     for m in SUFFIXES:
@@ -93,6 +100,7 @@ PUNCT = [n for n in ["period", "comma", "colon", "semicolon", "quoteright", "quo
                      "bracketleft", "bracketright", "exclam", "question", "slash", "ellipsis", "periodcentered",
                      "quotesinglbase", "quotedblbase", "guillemotleft", "guillemotright", "guilsinglleft",
                      "guilsinglright"] if n in placed]
+PUNCT += [n + ".case" for n in GL.CASE if n + ".case" in placed]
 STEM = {"lower": "l", "cap": "I", "fig": "l"}
 
 
@@ -126,6 +134,7 @@ def kern(a, b):
 
 
 SOFT = {"quoteright", "quoteleft", "quotedblright", "quotedblleft", "quotesingle", "quotedbl", "hyphen", "endash"}
+SOFT |= {"hyphen.case", "endash.case"}
 CLASS_KERN = {}
 for a in REPS + PUNCT:
     for b in REPS + PUNCT:
@@ -150,6 +159,41 @@ for (a, b), k in CLASS_KERN.items():
             gaps = SP.pair_gap_profile(prof[x][1], adv[x] + k, prof[y][0])
             if gaps and min(gaps.values()) < ACCENT_GAP:
                 EXCEPTIONS[(x, y)] = k + round(ACCENT_GAP - min(gaps.values()))
+# Clearance pass: the f's overhanging top must never touch a quote or an accent that
+# follows it. Measure the real outlines and open each pair just enough.
+CLEAR = 45
+OVERHANG = [n for n in ("f", "f.ss01") if n in placed]
+FOLLOWERS = sorted({n for n in placed if n not in SPACE_LIKE and n not in COMBINING and n in prof
+                    and (kind(n) == "lower" and placed[n].bounds[3] > GL.XH + 40 and base_of(n) != n
+                         or n in ("quoteright", "quotedblright", "quotesingle", "quotedbl",
+                                  "quoteleft", "quotedblleft", "question", "exclam", "asterisk",
+                                  "parenright", "bracketright", "braceright", "trademark", "registered"))})
+
+
+def current_kern(x, y):
+    if (x, y) in EXCEPTIONS:
+        return EXCEPTIONS[(x, y)]
+    rx = base_of(x) if base_of(x) in MEMBERS else x
+    ry = base_of(y) if base_of(y) in MEMBERS else y
+    return CLASS_KERN.get((rx, ry), 0)
+
+
+CLEARANCE = {}
+for x in OVERHANG:
+    for y in FOLLOWERS:
+        k = current_kern(x, y)
+        gaps = SP.pair_gap_profile(prof[x][1], adv[x] + k, prof[y][0])
+        b = base_of(y)
+        if b == "dotlessi" and y.startswith("i"):   # į keeps the i's own dot
+            b = "i"
+        if b != y and b in prof:   # only where the accent itself closes the gap
+            bg = SP.pair_gap_profile(prof[x][1], adv[x] + current_kern(x, b), prof[b][0])
+            if bg and gaps and min(gaps.values()) >= min(bg.values()) - 3:
+                continue
+        if gaps and min(gaps.values()) < CLEAR:
+            EXCEPTIONS[(x, y)] = k + round(CLEAR - min(gaps.values()))
+            CLEARANCE[(x, y)] = EXCEPTIONS[(x, y)]
+print(f"clearance pairs: {len(CLEARANCE)}", dict(list(CLEARANCE.items())[:12]))
 CLASS_KERN = {p: v for p, v in CLASS_KERN.items() if v}
 print(f"{len(REPS)} kerning classes, {len(CLASS_KERN)} class pairs, {len(EXCEPTIONS)} exceptions")
 
@@ -186,6 +230,14 @@ i.openTypeOS2TypoAscender, i.openTypeOS2TypoDescender, i.openTypeOS2TypoLineGap 
 i.openTypeHheaAscender, i.openTypeHheaDescender, i.openTypeHheaLineGap = VM["asc"], VM["desc"], 0
 i.openTypeOS2WinAscent, i.openTypeOS2WinDescent = VM["winAsc"], VM["winDesc"]
 i.postscriptUnderlinePosition, i.postscriptUnderlineThickness = -110, 70
+# PostScript hinting zones (baseline, x-height, figure height, cap height, ascender, each
+# with its overshoot) and standard stems, used by otfautohint for the OTF
+i.postscriptBlueValues = [-GL.OV, 0, GL.XH, GL.XH + GL.OV, GL.FIG, GL.FIG + GL.OV,
+                          GL.CAP, GL.CAP + GL.OV, GL.ASC, GL.ASC + GL.OV]
+i.postscriptOtherBlues = [GL.DSC - GL.OV, GL.DSC]
+i.postscriptStemSnapV = [GL.W]
+i.postscriptStemSnapH = [GL.WB, GL.WB + 10]
+i.postscriptBlueFuzz = 0
 i.openTypeGaspRangeRecords = [{"rangeMaxPPEM": 65535, "rangeGaspBehavior": [0, 1, 2, 3]}]
 
 cmap = {}
@@ -232,9 +284,16 @@ for (a, b), v in CLASS_KERN.items():
     u.kerning[(side(a, 1), side(b, 2))] = v
 for (a, b), v in EXCEPTIONS.items():
     u.kerning[(a, b)] = v
+for alias, orig in ALIASES.items():          # aliases take the original's pairs
+    for (a, b), v in list(u.kerning.items()):
+        if a == orig:
+            u.kerning[(alias, b)] = v
+        if b == orig:
+            u.kerning[(a, alias)] = v
 
 tops = " ".join(n for n in sorted(COMBINING) if GL.COMBINING[n][2] == "top")
 bottoms = " ".join(n for n in sorted(COMBINING) if GL.COMBINING[n][2] != "top")
+case_subs = "\n".join(f"    sub {n} by {n}.case;" for n in GL.CASE if n + ".case" in placed)
 u.features.text = f"""languagesystem DFLT dflt;
 languagesystem latn dflt;
 
@@ -261,6 +320,10 @@ feature ss01 {{
 feature salt {{
     sub f by f.ss01;
 }} salt;
+
+feature case {{
+{case_subs}
+}} case;
 """
 u.save(UFO_PATH)
 print(f"{len(order)} glyphs, {total_segments} outline segments, written to {UFO_PATH}")

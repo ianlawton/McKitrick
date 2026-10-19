@@ -166,6 +166,8 @@
     <string>T_.glif</string>
     <key>Tcaron</key>
     <string>T_caron.glif</string>
+    <key>Tcedilla</key>
+    <string>T_cedilla.glif</string>
     <key>Tcommaaccent</key>
     <string>T_commaaccent.glif</string>
     <key>Thorn</key>
@@ -276,6 +278,8 @@
     <string>brokenbar.glif</string>
     <key>bullet</key>
     <string>bullet.glif</string>
+    <key>bullet.case</key>
+    <string>bullet.case.glif</string>
     <key>c</key>
     <string>c.glif</string>
     <key>cacute</key>
@@ -348,8 +352,12 @@
     <string>emacron.glif</string>
     <key>emdash</key>
     <string>emdash.glif</string>
+    <key>emdash.case</key>
+    <string>emdash.case.glif</string>
     <key>endash</key>
     <string>endash.glif</string>
+    <key>endash.case</key>
+    <string>endash.case.glif</string>
     <key>eogonek</key>
     <string>eogonek.glif</string>
     <key>equal</key>
@@ -388,12 +396,20 @@
     <string>greater.glif</string>
     <key>guillemotleft</key>
     <string>guillemotleft.glif</string>
+    <key>guillemotleft.case</key>
+    <string>guillemotleft.case.glif</string>
     <key>guillemotright</key>
     <string>guillemotright.glif</string>
+    <key>guillemotright.case</key>
+    <string>guillemotright.case.glif</string>
     <key>guilsinglleft</key>
     <string>guilsinglleft.glif</string>
+    <key>guilsinglleft.case</key>
+    <string>guilsinglleft.case.glif</string>
     <key>guilsinglright</key>
     <string>guilsinglright.glif</string>
+    <key>guilsinglright.case</key>
+    <string>guilsinglright.case.glif</string>
     <key>h</key>
     <string>h.glif</string>
     <key>hbar</key>
@@ -402,6 +418,8 @@
     <string>hungarumlaut.glif</string>
     <key>hyphen</key>
     <string>hyphen.glif</string>
+    <key>hyphen.case</key>
+    <string>hyphen.case.glif</string>
     <key>i</key>
     <string>i.glif</string>
     <key>iacute</key>
@@ -508,6 +526,8 @@
     <string>period.glif</string>
     <key>periodcentered</key>
     <string>periodcentered.glif</string>
+    <key>periodcentered.case</key>
+    <string>periodcentered.case.glif</string>
     <key>perthousand</key>
     <string>perthousand.glif</string>
     <key>plus</key>
@@ -574,6 +594,8 @@
     <string>t.glif</string>
     <key>tcaron</key>
     <string>tcaron.glif</string>
+    <key>tcedilla</key>
+    <string>tcedilla.glif</string>
     <key>tcommaaccent</key>
     <string>tcommaaccent.glif</string>
     <key>thorn</key>

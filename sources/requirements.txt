@@ -3,3 +3,4 @@ shapely>=2.0
 ufoLib2>=0.16
 gftools>=0.10
 fontmake>=3.9
+afdko>=4.0

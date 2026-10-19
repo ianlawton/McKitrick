@@ -87,6 +87,7 @@
       <string>Scommaaccent</string>
       <string>T</string>
       <string>Tcaron</string>
+      <string>Tcedilla</string>
       <string>Tcommaaccent</string>
       <string>Thorn</string>
       <string>U</string>
@@ -142,6 +143,7 @@
       <string>breve</string>
       <string>brokenbar</string>
       <string>bullet</string>
+      <string>bullet.case</string>
       <string>c</string>
       <string>cacute</string>
       <string>caron</string>
@@ -178,7 +180,9 @@
       <string>ellipsis</string>
       <string>emacron</string>
       <string>emdash</string>
+      <string>emdash.case</string>
       <string>endash</string>
+      <string>endash.case</string>
       <string>eogonek</string>
       <string>equal</string>
       <string>eth</string>
@@ -198,13 +202,18 @@
       <string>gravecomb</string>
       <string>greater</string>
       <string>guillemotleft</string>
+      <string>guillemotleft.case</string>
       <string>guillemotright</string>
+      <string>guillemotright.case</string>
       <string>guilsinglleft</string>
+      <string>guilsinglleft.case</string>
       <string>guilsinglright</string>
+      <string>guilsinglright.case</string>
       <string>h</string>
       <string>hbar</string>
       <string>hungarumlaut</string>
       <string>hyphen</string>
+      <string>hyphen.case</string>
       <string>i</string>
       <string>iacute</string>
       <string>icircumflex</string>
@@ -258,6 +267,7 @@
       <string>percent</string>
       <string>period</string>
       <string>periodcentered</string>
+      <string>periodcentered.case</string>
       <string>perthousand</string>
       <string>plus</string>
       <string>plusminus</string>
@@ -290,6 +300,7 @@
       <string>sterling</string>
       <string>t</string>
       <string>tcaron</string>
+      <string>tcedilla</string>
       <string>tcommaaccent</string>
       <string>thorn</string>
       <string>three</string>
@@ -507,6 +518,8 @@
       <string>base</string>
       <key>Tcaron</key>
       <string>base</string>
+      <key>Tcedilla</key>
+      <string>base</string>
       <key>Tcommaaccent</key>
       <string>base</string>
       <key>Thorn</key>
@@ -617,6 +630,8 @@
       <string>base</string>
       <key>bullet</key>
       <string>base</string>
+      <key>bullet.case</key>
+      <string>base</string>
       <key>c</key>
       <string>base</string>
       <key>cacute</key>
@@ -689,7 +704,11 @@
       <string>base</string>
       <key>emdash</key>
       <string>base</string>
+      <key>emdash.case</key>
+      <string>base</string>
       <key>endash</key>
+      <string>base</string>
+      <key>endash.case</key>
       <string>base</string>
       <key>eogonek</key>
       <string>base</string>
@@ -729,11 +748,19 @@
       <string>base</string>
       <key>guillemotleft</key>
       <string>base</string>
+      <key>guillemotleft.case</key>
+      <string>base</string>
       <key>guillemotright</key>
+      <string>base</string>
+      <key>guillemotright.case</key>
       <string>base</string>
       <key>guilsinglleft</key>
       <string>base</string>
+      <key>guilsinglleft.case</key>
+      <string>base</string>
       <key>guilsinglright</key>
+      <string>base</string>
+      <key>guilsinglright.case</key>
       <string>base</string>
       <key>h</key>
       <string>base</string>
@@ -742,6 +769,8 @@
       <key>hungarumlaut</key>
       <string>base</string>
       <key>hyphen</key>
+      <string>base</string>
+      <key>hyphen.case</key>
       <string>base</string>
       <key>i</key>
       <string>base</string>
@@ -849,6 +878,8 @@
       <string>base</string>
       <key>periodcentered</key>
       <string>base</string>
+      <key>periodcentered.case</key>
+      <string>base</string>
       <key>perthousand</key>
       <string>base</string>
       <key>plus</key>
@@ -912,6 +943,8 @@
       <key>t</key>
       <string>base</string>
       <key>tcaron</key>
+      <string>base</string>
+      <key>tcedilla</key>
       <string>base</string>
       <key>tcommaaccent</key>
       <string>base</string>

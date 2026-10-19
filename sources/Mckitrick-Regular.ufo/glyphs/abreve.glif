@@ -23,10 +23,6 @@
       <point x="72" y="76"/>
       <point x="116" y="15"/>
       <point x="190" y="0" type="curve"/>
-      <point x="203" y="0"/>
-      <point x="211" y="-2"/>
-      <point x="227" y="-2" type="curve"/>
-      <point x="227" y="0" type="line"/>
     </contour>
     <contour>
       <point x="190" y="500" type="curve"/>
