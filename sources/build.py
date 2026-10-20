@@ -19,7 +19,7 @@ import spacing as SP
 import fitcurves as FC
 
 FAMILY = "Mckitrick"
-VERSION = (2, 7)
+VERSION = (2, 8)
 REPO = "https://github.com/ianlawton/McKitrick"
 UFO_PATH = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), f"{FAMILY}-Regular.ufo")
 

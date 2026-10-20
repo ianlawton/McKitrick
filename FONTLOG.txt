@@ -31,6 +31,10 @@ Lawton's direction and review.
 ChangeLog
 ---------
 
+20 October 2026 (Ian Lawton) Mckitrick v2.008
+- G: keeps the C's arch, which now meets the baseline at the left side of the
+  vertical stroke; the vertical stands on its own square foot
+
 20 October 2026 (Ian Lawton) Mckitrick v2.007
 - G: the bowl now runs into a flat foot with a square corner, instead of an
   angled C-like base

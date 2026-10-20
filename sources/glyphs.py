@@ -223,8 +223,10 @@ g("E", ord("E"), stem(H, 0, CAP), stroke([(H, BT), (245, BT)], BAR),
   stroke([(H, 400), (215, 400)], WB), stroke([(H, BB), (255, BB)], BAR))
 g("F", ord("F"), stem(H, 0, CAP), stroke([(H, BT), (245, BT)], BAR),
   stroke([(H, 400), (215, 400)], WB))
-g("G", ord("G"), stroke(path(bz((295, 725), (20, 700), (5, H), (165, H)), (285, H), (285, 330))),   # flat foot, square corner
-  stroke([(175, 330), (300, 330)], WB))
+# G: the C's arch, ending where its outer edge meets the baseline at the left side of
+# the vertical stroke, which stands on its own square foot
+g("G", ord("G"), unary_union([stroke(bz((295, 725), (20, 700), (0, 50), (285, 36.5))), stroke([(285, 0), (285, 330)]),
+  stroke([(175, 330), (300, 330)], WB)]).difference(box(285 - H, -100, 400, 0)))
 g("H", ord("H"), stem(H, 0, CAP), stem(270, 0, CAP), stroke([(H, 400), (270, 400)], WB))
 g("I", ord("I"), stem(H, 0, CAP))
 g("J", ord("J"), stroke(path((200, CAP), bz((200, 140), (200, -20), (60, -30), (10, 70)))))
