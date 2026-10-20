@@ -31,6 +31,12 @@ Lawton's direction and review.
 ChangeLog
 ---------
 
+20 October 2026 (Ian Lawton) Mckitrick v2.007
+- G: the bowl now runs into a flat foot with a square corner, instead of an
+  angled C-like base
+- Q: the straight tail is replaced by a curved stroke that leaves the bottom
+  of the bowl and sweeps right, mirroring the curve of the j
+
 19 October 2026 (Ian Lawton) Mckitrick v2.006
 - Straight edges are now single straight lines: the bars of E F L T Z Æ Œ
   sit flush with the cap height and baseline, the bowls of B D P R b leave

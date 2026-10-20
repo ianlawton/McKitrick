@@ -223,7 +223,7 @@ g("E", ord("E"), stem(H, 0, CAP), stroke([(H, BT), (245, BT)], BAR),
   stroke([(H, 400), (215, 400)], WB), stroke([(H, BB), (255, BB)], BAR))
 g("F", ord("F"), stem(H, 0, CAP), stroke([(H, BT), (245, BT)], BAR),
   stroke([(H, 400), (215, 400)], WB))
-g("G", ord("G"), stroke(path(bz((295, 725), (20, 700), (0, 50), (285, 30)), (285, 330))),
+g("G", ord("G"), stroke(path(bz((295, 725), (20, 700), (5, H), (165, H)), (285, H), (285, 330))),   # flat foot, square corner
   stroke([(175, 330), (300, 330)], WB))
 g("H", ord("H"), stem(H, 0, CAP), stem(270, 0, CAP), stroke([(H, 400), (270, 400)], WB))
 g("I", ord("I"), stem(H, 0, CAP))
@@ -238,7 +238,8 @@ g("N", ord("N"), stem(H, 0, CAP), stem(285, 0, CAP),
   stroke([(30, CAP + 30), (297, -30)]).intersection(box(0, -1e4, 285 + H, 1e4)), lo=0, hi=CAP)
 g("O", ord("O"), ring(165, 380, 123, 338 + OV))
 g("P", ord("P"), stem(H, 0, CAP), stroke(path((H, TC), bz((W, TC), (310, TC), (300, 330), (H, 345)))))
-g("Q", ord("Q"), ring(165, 380, 123, 338 + OV), stroke([(175, 140), (300, -110)]))
+g("Q", ord("Q"), ring(165, 380, 123, 338 + OV),
+  stroke(bz((195, 40), (195, -60), (225, -120), (305, -150))))   # tail: the j's curve, mirrored
 g("R", ord("R"), stem(H, 0, CAP), stroke(path((H, TC), bz((W, TC), (310, TC), (300, 330), (H, 345)))),
   stroke([(140, 360), (311, -36)]), lo=0)
 g("S", ord("S"), stroke(path(bz((215, 690), (160, 755), (45, 740), (48, 585)),
